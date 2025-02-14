@@ -6,6 +6,7 @@ import 'package:task_manager_app/view/delete_task_dialog.dart';
 import 'package:task_manager_app/view/update_task_dialog.dart';
 import 'package:task_manager_app/view_model/screen_model.dart';
 import 'package:task_manager_app/view_model/todo_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp();
@@ -41,11 +42,38 @@ class HomeScreen extends StatelessWidget {
           'Task Management',
         ),
         actions: [
-          CupertinoSwitch(
-            value:screenModel.offlineMode,
-            onChanged: (value) {
-              screenModel.toggleMode();
-            },
+          Row(
+            children: [
+              const Text(
+                'sync',
+              ),
+              CupertinoSwitch(
+                value:screenModel.offlineMode,
+                onChanged: (value) async {
+                  screenModel.toggleMode();
+                  if(!screenModel.offlineMode){
+                    final todoModel = Provider.of<TodoModel>(context,listen: false);
+                    final todos = todoModel.todoBox;
+                    CollectionReference tasks = FirebaseFirestore.instance.collection('tasks');
+                    tasks.get()
+                        .then((QuerySnapshot querySnapshot) {
+                      querySnapshot.docs.forEach((doc) {
+                       for (int index = 0; index < todos.length; index++) {
+                         if( doc["id"]!=todos[index].id){
+                          tasks.add({
+                            'id': todos[index].id,
+                            'title': todos[index].title,
+                            'taskDesc': todos[index].taskDesc,
+                          },);}                  }
+                      });
+                    });
+
+
+
+                  }
+                },
+              ),
+            ],
           ),
 
         ],

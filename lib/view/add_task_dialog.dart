@@ -1,5 +1,4 @@
 import 'dart:math';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -102,13 +101,7 @@ class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
      var todoModel = Provider.of<TodoModel>(context,listen: false);
      var id = Random().nextInt(100); // Value is >= 0 and < 100.
     todoModel.addTodo(taskName,taskDesc,id);
-     DocumentReference docRef = await FirebaseFirestore.instance.collection('tasks').add(
-       {
-         'id':id,
-         'title': taskName,
-         'taskDesc': taskDesc,
-       },
-     );
+
     _clearAll();
   }
 
