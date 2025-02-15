@@ -17,13 +17,12 @@ class UpdateTaskAlertDialog extends StatefulWidget {
 class _UpdateTaskAlertDialogState extends State<UpdateTaskAlertDialog> {
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController taskDescController = TextEditingController();
-  String selectedValue = '';
+  var _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     taskNameController.text = widget.todu.title;
     taskDescController.text = widget.todu.taskDesc;
-
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     return AlertDialog(
@@ -34,11 +33,14 @@ class _UpdateTaskAlertDialogState extends State<UpdateTaskAlertDialog> {
         style: TextStyle(fontSize: 16, color: Colors.brown),
       ),
       content: SizedBox(
-        height: height * 0.2,
+        height: height * 0.35,
         width: width,
         child: Form(
+          key: _formKey,
           child: Column(
             children: <Widget>[
+              const SizedBox(height: 30),
+
               TextFormField(
                 controller: taskNameController,
                 style: const TextStyle(fontSize: 14),
@@ -52,8 +54,14 @@ class _UpdateTaskAlertDialogState extends State<UpdateTaskAlertDialog> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter a valid task title!';
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 30),
               TextFormField(
                 controller: taskDescController,
                 keyboardType: TextInputType.multiline,
@@ -69,6 +77,12 @@ class _UpdateTaskAlertDialogState extends State<UpdateTaskAlertDialog> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter a valid task Description!';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 15),
             ],

@@ -18,7 +18,7 @@ class AddTaskAlertDialog extends StatefulWidget {
 class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController taskDescController = TextEditingController();
-  late String selectedValue = '';
+  var _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,14 @@ class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
         style: TextStyle(fontSize: 16, color: Colors.brown),
       ),
       content: SizedBox(
-        height: height * 0.2,
+        height: height * 0.35,
         width: width,
         child: Form(
+          key: _formKey,
           child: Column(
             children: <Widget>[
-              TextFormField(
+              const SizedBox(height: 30),
+TextFormField(
                 controller: taskNameController,
                 style: const TextStyle(fontSize: 14),
                 decoration: InputDecoration(
@@ -45,15 +47,21 @@ class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
                     horizontal: 20,
                     vertical: 20,
                   ),
-                  hintText: 'Task',
+                  hintText: 'Task Title',
                   hintStyle: const TextStyle(fontSize: 14),
                   icon: const Icon(CupertinoIcons.square_list, color: Colors.brown),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter a valid task title!';
+                  }
+                  return null;
+                },
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 30),
               TextFormField(
                 controller: taskDescController,
                 keyboardType: TextInputType.multiline,
@@ -71,6 +79,12 @@ class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return 'Enter a valid task Description!';
+                  }
+                  return null;
+                },
               ),
               const SizedBox(height: 15),
               ],
@@ -88,8 +102,14 @@ class _AddTaskAlertDialogState extends State<AddTaskAlertDialog> {
           onPressed: () {
             final taskName = taskNameController.text;
             final taskDesc = taskDescController.text;
-            _addTasks(taskName: taskName, taskDesc: taskDesc);
-            Navigator.of(context, rootNavigator: true).pop();
+
+            final isValid = _formKey.currentState?.validate();
+            if (isValid==true) {
+              _addTasks(taskName: taskName, taskDesc: taskDesc);
+              Navigator.of(context, rootNavigator: true).pop();
+              return;
+            }
+
           },
           child: const Text('Save'),
         ),

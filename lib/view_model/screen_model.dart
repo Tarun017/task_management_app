@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 class ScreenModel with ChangeNotifier {
 // Dark Mode:
-  bool _offlineMode = false;
+  bool _offlineMode = true;
 
   get offlineMode => _offlineMode;
 
